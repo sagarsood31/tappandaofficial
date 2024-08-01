@@ -1,24 +1,17 @@
 import cron from 'node-cron';
-import GameState from './models/GameState.js'; // Adjust the path as necessary
+import GameState from './models/GameState.js';
 
-// Function to update coins for all users
-const updateCoinsForAllUsers = async () => {
+const updateGameStates = async () => {
   try {
-    const users = await GameState.find({});
-
-    users.forEach(async (user) => {
-      const { _id, coins, profitPerHour, lastUpdated } = user;
-      const now = Date.now();
-      const elapsedSeconds = (now - new Date(lastUpdated).getTime()) / 1000;
-      const newCoins = coins + (profitPerHour / 3600) * elapsedSeconds;
-      await GameState.findByIdAndUpdate(_id, { coins: newCoins, lastUpdated: now });
+    const gameStates = await GameState.find();
+    gameStates.forEach(async (gameState) => {
+      gameState.calculateCoins();
+      await gameState.save();
     });
-
-    console.log('Coins updated for all users');
   } catch (error) {
-    console.error('Error updating coins for all users:', error);
+    console.error('Error updating game states:', error);
   }
 };
 
-// Schedule the task to run every minute
-cron.schedule('* * * * *', updateCoinsForAllUsers);
+// Schedule the task to run every hour
+cron.schedule('0 * * * *', updateGameStates);

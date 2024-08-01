@@ -5,6 +5,7 @@ export const updateProfitPerHour = async (userId, profitPerHour) => {
     const gameState = await GameState.findOne({ userId });
     if (gameState) {
       gameState.profitPerHour = profitPerHour;
+      gameState.calculateCoins(); // Update coins based on elapsed time
       await gameState.save();
     }
   } catch (error) {
