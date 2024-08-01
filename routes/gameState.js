@@ -9,7 +9,11 @@ router.post('/update/:userId', async (req, res) => {
     const { userId } = req.params;
     const updateData = req.body;
 
-    const gameState = await GameState.findOneAndUpdate({ userId }, updateData, { new: true, upsert: true });
+    const gameState = await GameState.findOneAndUpdate(
+      { userId },
+      { $set: updateData },
+      { new: true, upsert: true }
+    );
 
     res.status(200).json(gameState);
   } catch (error) {
@@ -22,7 +26,7 @@ router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const gameState = await GameState.findOne({ userId:userId });
+    const gameState = await GameState.findOne({ userId });
 
     if (!gameState) {
       return res.status(404).json({ message: 'Game state not found' });

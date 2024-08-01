@@ -20,7 +20,7 @@ const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
-//s
+
 app.use('/gameState', gameStateRouter);
 
 app.listen(port, () => {
