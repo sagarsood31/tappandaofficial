@@ -1,6 +1,5 @@
-import GameState from '../models/GameState'; // Adjust the path as necessary
+import GameState from '../models/GameState.js';
 
-// Update the profit per hour for a user
 export const updateProfitPerHour = async (userId, profitPerHour) => {
   try {
     const gameState = await GameState.findOne({ userId });
