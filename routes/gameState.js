@@ -56,4 +56,22 @@ router.post('/update-profit-per-hour', async (req, res) => {
   }
 });
 
+// Update coins
+router.post('/update-coins', async (req, res) => {
+  try {
+    const { userId, coins } = req.body;
+
+    const gameState = await GameState.findOne({ userId });
+    if (gameState) {
+      gameState.coins = coins;
+      await gameState.save();
+      res.status(200).json(gameState);
+    } else {
+      res.status(404).json({ message: 'Game state not found' });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default router;
