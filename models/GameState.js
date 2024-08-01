@@ -18,5 +18,5 @@ const GameStateSchema = new mongoose.Schema({
   boostUsage: { type: Object, default: { count: 5, resetTime: Date.now() } },
   claimedTasks: { type: Array, default: [] }, // Added claimedTasks field
 });
-
+//x
 export default mongoose.model('GameState', GameStateSchema);
