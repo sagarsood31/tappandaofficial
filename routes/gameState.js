@@ -1,39 +1,7 @@
-// routes/gameState.js
-
 import express from 'express';
 import GameState from '../models/GameState.js';
 
 const router = express.Router();
-
-// Middleware to check and reset boosters
-router.use(async (req, res, next) => {
-  try {
-    const { userId } = req.body;
-    const gameState = await GameState.findOne({ userId });
-    if (gameState) {
-      const now = new Date();
-      const sixHoursInMs = 6 * 60 * 60 * 1000;
-
-      // Reset booster counts every 6 hours
-      if (now - new Date(gameState.boosterResetTime) >= sixHoursInMs) {
-        gameState.boosterCounts = { fillEnergy: 3, energyLimit: 3 };
-        gameState.boosterResetTime = now;
-      }
-
-      // Reset energy limit back to default after 15 minutes
-      const fifteenMinutesInMs = 15 * 60 * 1000;
-      if (now - new Date(gameState.energyLimitResetTime) >= fifteenMinutesInMs) {
-        gameState.maxPower = gameState.level === 1 ? 4999 : 49999; // Set to default based on level
-        gameState.energyLimitResetTime = now;
-      }
-
-      await gameState.save();
-    }
-    next();
-  } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 // Update game state
 router.post('/update/:userId', async (req, res) => {

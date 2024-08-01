@@ -19,8 +19,6 @@ const GameStateSchema = new mongoose.Schema({
   boostUsage: { type: Object, default: { count: 5, resetTime: Date.now() } },
   claimedTasks: { type: Array, default: [] },
   lastUpdated: { type: Date, default: Date.now },
-  boosterResetTime: { type: Date, default: Date.now },  // New field to track booster reset time
-  energyLimitResetTime: { type: Date, default: Date.now }  // New field to track energy limit reset time
 });
 
 GameStateSchema.methods.calculateCoins = function() {

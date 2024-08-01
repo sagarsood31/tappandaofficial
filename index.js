@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import gameStateRouter from './routes/gameState.js';
+import './cron.js'; // Import the cron job
 
 dotenv.config();
 
