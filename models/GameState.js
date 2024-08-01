@@ -8,7 +8,7 @@ const GameStateSchema = new mongoose.Schema({
   power: { type: Number, default: 4999 },
   maxPower: { type: Number, default: 4999 },
   profitPerMinute: { type: Number, default: 0 },
-  profitPerHour: { type: Number, default: 0 }, // New field
+  profitPerHour: { type: Number, default: 0 },
   uniqueSessions: { type: Array, default: [] },
   boosterCounts: { type: Object, default: { fillEnergy: 3, energyLimit: 3 } },
   exchange: { type: String, default: 'BYBIT' },
@@ -19,6 +19,8 @@ const GameStateSchema = new mongoose.Schema({
   boostUsage: { type: Object, default: { count: 5, resetTime: Date.now() } },
   claimedTasks: { type: Array, default: [] },
   lastUpdated: { type: Date, default: Date.now },
+  boosterResetTime: { type: Date, default: Date.now },  // New field to track booster reset time
+  energyLimitResetTime: { type: Date, default: Date.now }  // New field to track energy limit reset time
 });
 
 GameStateSchema.methods.calculateCoins = function() {
