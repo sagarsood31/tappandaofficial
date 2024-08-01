@@ -22,7 +22,7 @@ router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const gameState = await GameState.findOne({ userId });
+    const gameState = await GameState.findOne({ userId:userId });
 
     if (!gameState) {
       return res.status(404).json({ message: 'Game state not found' });
