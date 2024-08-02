@@ -15,16 +15,22 @@ export const fetchGameState = async (userId) => {
 
 export const updateGameState = async (userId, gameStateData) => {
   try {
-    const gameState = await GameState.findOne({ userId });
+    console.log(`Attempting to update game state for user: ${userId}`);
+    console.log('Received game state data:', gameStateData);
+
+    let gameState = await GameState.findOne({ userId });
     if (!gameState) {
+      console.error(`Game state not found for user: ${userId}`);
       throw new Error('Game state not found');
     }
 
     // Update game state fields
     Object.assign(gameState, gameStateData);
     gameState.lastUpdated = Date.now();
+
     await gameState.save();
 
+    console.log('Game state updated successfully:', gameState);
     return gameState;
   } catch (error) {
     console.error('Error updating game state:', error);
