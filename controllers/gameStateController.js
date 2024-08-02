@@ -1,3 +1,5 @@
+// controller/gameStateController.js
+
 import GameState from '../models/GameState.js';
 
 export const getGameState = async (req, res) => {
