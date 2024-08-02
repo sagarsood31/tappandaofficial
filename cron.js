@@ -1,3 +1,5 @@
+// cron.js
+
 import cron from 'node-cron';
 import { updateCoinsPeriodically } from './controllers/gameStateController.js';
 
