@@ -1,5 +1,3 @@
-// controller/gameStateController.js
-
 import GameState from '../models/GameState.js';
 
 export const getGameState = async (req, res) => {
@@ -10,8 +8,8 @@ export const getGameState = async (req, res) => {
       return res.status(404).json({ message: 'Game state not found' });
     }
 
-    // Refill power before sending the game state
-    gameState.refillPower();
+    gameState.calculateCoins(); // Calculate coins based on elapsed time
+    gameState.refillPower(); // Refill power
     await gameState.save();
 
     res.json(gameState);
@@ -31,9 +29,10 @@ export const updateGameState = async (req, res) => {
 
     Object.assign(gameState, req.body);
 
-    // Ensure the last refill time is updated correctly
+    gameState.calculateCoins(); // Calculate coins based on elapsed time
+    gameState.lastUpdated = Date.now(); // Update the last updated time
     if (req.body.power !== undefined) {
-      gameState.lastRefillTime = Date.now();
+      gameState.lastRefillTime = Date.now(); // Ensure the last refill time is updated correctly
     }
 
     await gameState.save();
@@ -71,5 +70,19 @@ export const resetGameState = async (req, res) => {
     res.json(gameState);
   } catch (error) {
     res.status(500).json({ message: 'Error resetting game state', error });
+  }
+};
+
+export const updateCoinsPeriodically = async () => {
+  try {
+    const gameStates = await GameState.find();
+    const currentTime = Date.now();
+
+    for (const gameState of gameStates) {
+      gameState.calculateCoins(); // Calculate coins based on elapsed time
+      await gameState.save();
+    }
+  } catch (error) {
+    console.error('Failed to update coins periodically:', error);
   }
 };

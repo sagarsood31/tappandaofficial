@@ -24,8 +24,9 @@ const GameStateSchema = new mongoose.Schema({
 
 GameStateSchema.methods.calculateCoins = function() {
   const now = Date.now();
-  const elapsedMinutes = (now - this.lastUpdated) / 60000;
-  this.coins += this.profitPerMinute * elapsedMinutes;
+  const elapsedHours = (now - this.lastUpdated) / 3600000; // in hours
+  this.coins += this.profitPerHour * elapsedHours;
+  this.totalEarnedCoins += this.profitPerHour * elapsedHours;
   this.lastUpdated = now;
 };
 
