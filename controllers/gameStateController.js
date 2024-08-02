@@ -1,3 +1,5 @@
+// controller/gameStateController.js
+
 import GameState from '../models/GameState.js';
 
 export const getGameState = async (req, res) => {
@@ -7,8 +9,11 @@ export const getGameState = async (req, res) => {
     if (!gameState) {
       return res.status(404).json({ message: 'Game state not found' });
     }
-    gameState.calculatePower(); // Calculate power before sending
-    await gameState.save(); // Save the updated power and lastRefillTime
+
+    // Refill power before sending the game state
+    gameState.refillPower();
+    await gameState.save();
+
     res.json(gameState);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching game state', error });
@@ -18,9 +23,21 @@ export const getGameState = async (req, res) => {
 export const updateGameState = async (req, res) => {
   try {
     const { userId } = req.params;
-    const gameState = await GameState.findOneAndUpdate({ userId }, req.body, { new: true, upsert: true });
-    gameState.calculatePower(); // Calculate power before sending
-    await gameState.save(); // Save the updated power and lastRefillTime
+    const gameState = await GameState.findOne({ userId });
+
+    if (!gameState) {
+      return res.status(404).json({ message: 'Game state not found' });
+    }
+
+    Object.assign(gameState, req.body);
+
+    // Ensure the last refill time is updated correctly
+    if (req.body.power !== undefined) {
+      gameState.lastRefillTime = Date.now();
+    }
+
+    await gameState.save();
+
     res.json(gameState);
   } catch (error) {
     res.status(500).json({ message: 'Error updating game state', error });
@@ -48,7 +65,7 @@ export const resetGameState = async (req, res) => {
       boostUsage: { count: 5, resetTime: Date.now() },
       claimedTasks: [],
       lastUpdated: Date.now(),
-      lastRefillTime: Date.now(), // Reset refill time
+      lastRefillTime: Date.now(), // Ensure this is reset
     };
     const gameState = await GameState.findOneAndUpdate({ userId }, defaultState, { new: true, upsert: true });
     res.json(gameState);
