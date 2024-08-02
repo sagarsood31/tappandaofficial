@@ -8,7 +8,7 @@ const GameStateSchema = new mongoose.Schema({
   power: { type: Number, default: 4999 },
   maxPower: { type: Number, default: 4999 },
   profitPerMinute: { type: Number, default: 0 },
-  profitPerHour: { type: Number, default: 0 },
+  profitPerHour: { type: Number, default: 0 }, // New field
   uniqueSessions: { type: Array, default: [] },
   boosterCounts: { type: Object, default: { fillEnergy: 3, energyLimit: 3 } },
   exchange: { type: String, default: 'BYBIT' },
