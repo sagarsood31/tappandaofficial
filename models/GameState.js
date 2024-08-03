@@ -1,3 +1,5 @@
+// models/GameState.js
+
 import mongoose from 'mongoose';
 
 const GameStateSchema = new mongoose.Schema({
@@ -8,7 +10,7 @@ const GameStateSchema = new mongoose.Schema({
   power: { type: Number, default: 4999 },
   maxPower: { type: Number, default: 4999 },
   profitPerMinute: { type: Number, default: 0 },
-  profitPerHour: { type: Number, default: 0 }, // New field
+  profitPerHour: { type: Number, default: 0 },
   uniqueSessions: { type: Array, default: [] },
   boosterCounts: { type: Object, default: { fillEnergy: 3, energyLimit: 3 } },
   exchange: { type: String, default: 'BYBIT' },
@@ -19,21 +21,21 @@ const GameStateSchema = new mongoose.Schema({
   boostUsage: { type: Object, default: { count: 5, resetTime: Date.now() } },
   claimedTasks: { type: Array, default: [] },
   lastUpdated: { type: Date, default: Date.now },
-  lastRefillTime: { type: Date, default: Date.now }, // New field
+  lastRefillTime: { type: Date, default: Date.now },
 });
 
 GameStateSchema.methods.calculateCoins = function() {
   const now = Date.now();
-  const elapsedHours = (now - this.lastUpdated) / 3600000; // in hours
-  this.coins += this.profitPerHour * elapsedHours;
-  this.totalEarnedCoins += this.profitPerHour * elapsedHours;
+  const elapsedSeconds = (now - this.lastUpdated) / 1000;
+  const coinsToAdd = (this.profitPerHour / 3600) * elapsedSeconds;
+  this.coins += coinsToAdd;
   this.lastUpdated = now;
 };
 
 GameStateSchema.methods.refillPower = function() {
   const now = Date.now();
-  const elapsedTime = (now - this.lastRefillTime) / 1000; // in seconds
-  const powerToRefill = Math.floor(elapsedTime); // 1 power per second
+  const elapsedTime = (now - this.lastRefillTime) / 1000;
+  const powerToRefill = Math.floor(elapsedTime);
   this.power = Math.min(this.power + powerToRefill, this.maxPower);
   this.lastRefillTime = now;
 };

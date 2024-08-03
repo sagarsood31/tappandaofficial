@@ -1,3 +1,5 @@
+// controller/gameStateController.js
+
 import GameState from '../models/GameState.js';
 
 export const getGameState = async (req, res) => {
@@ -8,8 +10,8 @@ export const getGameState = async (req, res) => {
       return res.status(404).json({ message: 'Game state not found' });
     }
 
-    gameState.calculateCoins(); // Calculate coins based on elapsed time
-    gameState.refillPower(); // Refill power
+    gameState.refillPower();
+    gameState.calculateCoins();
     await gameState.save();
 
     res.json(gameState);
@@ -29,10 +31,8 @@ export const updateGameState = async (req, res) => {
 
     Object.assign(gameState, req.body);
 
-    gameState.calculateCoins(); // Calculate coins based on elapsed time
-    gameState.lastUpdated = Date.now(); // Update the last updated time
     if (req.body.power !== undefined) {
-      gameState.lastRefillTime = Date.now(); // Ensure the last refill time is updated correctly
+      gameState.lastRefillTime = Date.now();
     }
 
     await gameState.save();
@@ -64,7 +64,7 @@ export const resetGameState = async (req, res) => {
       boostUsage: { count: 5, resetTime: Date.now() },
       claimedTasks: [],
       lastUpdated: Date.now(),
-      lastRefillTime: Date.now(), // Ensure this is reset
+      lastRefillTime: Date.now(),
     };
     const gameState = await GameState.findOneAndUpdate({ userId }, defaultState, { new: true, upsert: true });
     res.json(gameState);
@@ -75,14 +75,18 @@ export const resetGameState = async (req, res) => {
 
 export const updateCoinsPeriodically = async () => {
   try {
-    const gameStates = await GameState.find();
-    const currentTime = Date.now();
+    const gameStates = await GameState.find({});
+    const now = Date.now();
 
     for (const gameState of gameStates) {
-      gameState.calculateCoins(); // Calculate coins based on elapsed time
+      const elapsedSeconds = (now - gameState.lastUpdated) / 1000;
+      const coinsToAdd = (gameState.profitPerHour / 3600) * elapsedSeconds;
+      gameState.coins += coinsToAdd;
+      gameState.lastUpdated = now;
+
       await gameState.save();
     }
   } catch (error) {
-    console.error('Failed to update coins periodically:', error);
+    console.error('Error updating coins periodically:', error);
   }
 };
