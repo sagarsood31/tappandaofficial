@@ -90,3 +90,19 @@ export const updateCoinsPeriodically = async () => {
     console.error('Error updating coins periodically:', error);
   }
 };
+
+export const verifyInvite = async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    // Assuming you have a logic to verify the invite using sessionId
+    const isVerified = true; // Replace with actual verification logic
+
+    if (!isVerified) {
+      return res.status(400).json({ success: false, message: 'Verification failed' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: 'Error verifying invite', error });
+  }
+};
