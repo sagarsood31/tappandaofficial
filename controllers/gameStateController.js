@@ -1,5 +1,3 @@
-// controller/gameStateController.js
-
 import GameState from '../models/GameState.js';
 
 export const getGameState = async (req, res) => {
@@ -70,6 +68,24 @@ export const resetGameState = async (req, res) => {
     res.json(gameState);
   } catch (error) {
     res.status(500).json({ message: 'Error resetting game state', error });
+  }
+};
+
+export const updateProfitPerHour = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { profitPerHour } = req.body;
+    const gameState = await GameState.findOneAndUpdate(
+      { userId },
+      { profitPerHour },
+      { new: true }
+    );
+    if (!gameState) {
+      return res.status(404).json({ message: 'Game state not found' });
+    }
+    res.json(gameState);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating profit per hour', error });
   }
 };
 
