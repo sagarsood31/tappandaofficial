@@ -1,5 +1,11 @@
 import express from 'express';
-import { getGameState, updateGameState, resetGameState, verifyInvite, updateProfitPerHour } from '../controllers/gameStateController.js';
+import {
+  getGameState,
+  updateGameState,
+  resetGameState,
+  updateProfitPerHour,
+  verifyInvite,
+} from '../controllers/gameStateController.js';
 
 const router = express.Router();
 

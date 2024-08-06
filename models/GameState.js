@@ -1,5 +1,3 @@
-// models/GameState.js
-
 import mongoose from 'mongoose';
 
 const GameStateSchema = new mongoose.Schema({
