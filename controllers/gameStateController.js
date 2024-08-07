@@ -8,10 +8,6 @@ export const getGameState = async (req, res) => {
       return res.status(404).json({ message: 'Game state not found' });
     }
 
-    gameState.refillPower();
-    gameState.calculateCoins();
-    await gameState.save();
-
     res.json(gameState);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching game state', error });
@@ -29,10 +25,6 @@ export const updateGameState = async (req, res) => {
 
     Object.assign(gameState, req.body);
 
-    if (req.body.power !== undefined) {
-      gameState.lastRefillTime = Date.now();
-    }
-
     await gameState.save();
 
     res.json(gameState);
@@ -46,23 +38,9 @@ export const resetGameState = async (req, res) => {
     const { userId } = req.params;
     const defaultState = {
       coins: 0,
-      earnedCoins: 0,
-      level: 1,
-      power: 4999,
-      maxPower: 4999,
-      profitPerMinute: 0,
-      profitPerHour: 0,
-      uniqueSessions: [],
-      boosterCounts: { fillEnergy: 3, energyLimit: 3 },
-      exchange: 'BYBIT',
-      questLevels: {},
-      lockedQuests: {},
-      selectedSkin: { name: 'Default', banner: '' },
-      purchasedSkins: ['Default', 'CEO'],
-      boostUsage: { count: 5, resetTime: Date.now() },
-      claimedTasks: [],
+      telegramFullName: '',
+      telegramUsername: '',
       lastUpdated: Date.now(),
-      lastRefillTime: Date.now(),
     };
     const gameState = await GameState.findOneAndUpdate({ userId }, defaultState, { new: true, upsert: true });
     res.json(gameState);
