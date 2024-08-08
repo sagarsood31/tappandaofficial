@@ -4,7 +4,7 @@ import {
   updateGameState,
   resetGameState,
   updateProfitPerHour,
-  verifyInvite,
+  verifyInvite
 } from '../controllers/gameStateController.js';
 
 const router = express.Router();
@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/:userId', getGameState);
 router.post('/update/:userId', updateGameState);
 router.post('/reset/:userId', resetGameState);
+router.post('/update-profit/:userId', updateProfitPerHour);
 router.post('/verify-invite', verifyInvite);
-router.post('/update-profit-per-hour/:userId', updateProfitPerHour);
 
 export default router;
